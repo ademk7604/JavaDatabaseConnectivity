@@ -1,4 +1,4 @@
-package d01;
+package d01_sqlVerbindung;
 // 1. import java.sql
 // 2 load and register the driver
 // 3. create connection
@@ -9,7 +9,6 @@ package d01;
 import java.sql.*;
 import java.util.Scanner;
 
-import javax.lang.model.element.NestingKind;
 public class Driver {
 	public static void main(String[] args) throws SQLException {
 		String url = "jdbc:mysql://localhost:3306/schule";
@@ -29,7 +28,7 @@ public class Driver {
 		
 		//Statement st = conn.prepareStatement(query); HACK lenmeye karsin PreparedStatement kullaniyoruz
 		PreparedStatement st = conn.prepareStatement(query);
-		ResultSet rs = st.executeQuery(query);
+		ResultSet rs = st.executeQuery(query); //DQL islemi
 		
 		// next diyerek verileri ilk siradan baslayarak tum verileri tek tek aliyorum 
 	while(rs.next()) {
@@ -54,7 +53,7 @@ public class Driver {
 	*/
 	
 	
-	
+	//query = "INSERT INTO students (studentNo, userName, vorname, nachname) VALUES ('1833847','melikeburc','melike','Burc')";
 	query = "INSERT INTO students (studentNo, userName, vorname, nachname) VALUES (?,?,?,?)";
 	st = conn.prepareStatement(query);
 	
@@ -63,7 +62,7 @@ public class Driver {
 	st.setString(3, "Yunusk");
 	st.setString(4, "Kayamakk");
 	//bu sekilde SQL Injection saldirilarina karsi guvenli bir kod olusturmnus olursunuz.
-	int count = st.executeUpdate();
+	int count = st.executeUpdate();//update islemi oldugu icin tekrar query gondermiyoruz //DML islemi
 	System.out.println(count+ " satir etkilendi!");
 	
 	// Hadi konsoldan verileri girelim ORNEK
@@ -88,7 +87,10 @@ public class Driver {
 	
 	st.close();
 	conn.close();
-	
+	/*
+	 * Bu derste Statement ile PreparedStatement  arasindaki farklari 
+	 * kullanican veri alma gibi kavamlari ogrenmis olduk
+	 */
 
 		
 	}
