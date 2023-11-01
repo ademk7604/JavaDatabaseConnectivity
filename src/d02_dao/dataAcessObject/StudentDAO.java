@@ -4,9 +4,20 @@ import java.sql.*;
 public class StudentDAO {
 	
 	private Connection conn =null;
+	// her method da tekrar tekrar db ye baglanacagina bir kere constroctur arasiligiyla baglandik
+	public StudentDAO() {
+		databaseConnection();
+	}
+	
+	//studentDAO silinirse yani null olursa baglanti kapansin
+	@Override
+	protected void finalize() throws Throwable {
+		System.out.println("DB closed");
+		conn.close();
+	}
 	
 	private void databaseConnection() {
-		String url = "jdbc:mysql://localhost:3306/students";
+		String url = "jdbc:mysql://localhost:3306/schule";
 		String username = "root";
 		String pasword = "Ademk1@";
 		
@@ -19,7 +30,7 @@ public class StudentDAO {
 	}
 	
 	public Student getStundent(String stundentNo) throws SQLException {
-		databaseConnection();
+		//databaseConnection(); controttur a verdik
 		 
 		 Student s = new Student();
 		 
@@ -40,8 +51,8 @@ public class StudentDAO {
 	}
 	
 	public void setStudent(Student s) throws SQLException {
-		databaseConnection();
-		String query = "INSERT INTO (stundetNo,userName,vorname,nachname) VALUES (?,?,?,?)";
+		//databaseConnection();
+		String query = "INSERT INTO students (studentNo,userName,vorname,nachname) VALUES (?,?,?,?)";
 		
 		PreparedStatement st = conn.prepareStatement(query);
 		
@@ -59,7 +70,7 @@ public class StudentDAO {
 	}
 	
 	public void deleteStudent(Student s) throws SQLException {
-		databaseConnection();
+		//databaseConnection();
 		String query = "delete from students where studentNo="+s.getStudentNo();
 		Statement st = conn.createStatement();
 		int count = st.executeUpdate(query);
@@ -74,14 +85,15 @@ public class StudentDAO {
 	}
 	
 	public void updateStudent(Student s, String studentNo) throws SQLException {
-		databaseConnection();
+		//databaseConnection();
 		//studentNo
 		//username
 		//vorname
 		//nachname
-		String query = "update students set studentNo="+s.getStudentNo()+
-				", userName="+s.getUserName()+", vorname="+s.getVorname()+
-				", nachname="+s.getNachname() + " where studentNo="+studentNo;
+		/*// bu sekilde de sql sorgusunu yazabiliriz ama sql injection probleminden dolayi PreparedStatement oalrak yapiyoruz
+		String query = "update students set studentNo='"+s.getStudentNo()+
+				"', userName='"+s.getUserName()+"', vorname='"+s.getVorname()+
+				"', nachname='"+s.getNachname() + "' where studentNo='"+studentNo+"'";
 		
 		Statement st = conn.createStatement();
 		int count = st.executeUpdate(query);
@@ -90,7 +102,25 @@ public class StudentDAO {
 		}else {
 			System.out.println("Stundent could not be updated!");
 		}
+		*/
 		
+		String query = "UPDATE students SET studentNo=?, userName=?, vorname=?, nachname=? WHERE studentNo=?";
+	    
+	    PreparedStatement st = conn.prepareStatement(query);
+	    
+	    st.setString(1, s.getStudentNo());
+	    st.setString(2, s.getUserName());
+	    st.setString(3, s.getVorname());
+	    st.setString(4, s.getNachname());
+	    st.setString(5, studentNo);
+	    
+	    int count = st.executeUpdate();
+	    
+	    if(count==1) {
+			System.out.println("Stundent successful updated!");
+		}else {
+			System.out.println("Stundent could not be updated!");
+		}
 	}
 
 }
