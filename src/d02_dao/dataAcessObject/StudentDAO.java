@@ -58,5 +58,40 @@ public class StudentDAO {
 		
 	}
 	
+	public void deleteStudent(Student s) throws SQLException {
+		databaseConnection();
+		String query = "delete from students where studentNo="+s.getStudentNo();
+		Statement st = conn.createStatement();
+		int count = st.executeUpdate(query);
+		if(count==1) {
+			System.out.println("Stundent successful deleted!");
+		}else {
+			System.out.println("Stundent could not be deleted!");
+		}
+		
+		
+		
+	}
 	
+	public void updateStudent(Student s, String studentNo) throws SQLException {
+		databaseConnection();
+		//studentNo
+		//username
+		//vorname
+		//nachname
+		String query = "update students set studentNo="+s.getStudentNo()+
+				", userName="+s.getUserName()+", vorname="+s.getVorname()+
+				", nachname="+s.getNachname() + " where studentNo="+studentNo;
+		
+		Statement st = conn.createStatement();
+		int count = st.executeUpdate(query);
+		if(count==1) {
+			System.out.println("Stundent successful updated!");
+		}else {
+			System.out.println("Stundent could not be updated!");
+		}
+		
+	}
+
 }
+
